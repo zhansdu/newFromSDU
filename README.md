@@ -1,1 +1,0 @@
-Web application for Library Automation System
