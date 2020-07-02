@@ -19,7 +19,7 @@ body {
 
 .button {
     padding: 3px 6px;
-    transition: .3s;
+    transition: .1s;
 }
 
 .button:hover {
