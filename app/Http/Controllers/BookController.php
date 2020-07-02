@@ -6,6 +6,7 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Book;
 use App\Http\Resources\Book as BookResource;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -21,8 +22,16 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
-    public function search($query) {
-        $books = Book::where('title', 'like', '%'.$query.'%')->paginate(10);
+    public function search($query)
+    {
+        $books = Book::where(DB::raw('lower(title)'), 'like', '%' . strtolower($query) . '%')->paginate(10);
+
+        return BookResource::collection($books);
+    }
+
+    public function autocomplete($query)
+    {
+        $books = Book::select('book_id', 'title', 'pub_year')->where(DB::raw('lower(title)'), 'like', '%' . strtolower($query) . '%')->take(15)->get();
 
         return BookResource::collection($books);
     }
@@ -30,7 +39,7 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -41,7 +50,7 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -52,8 +61,8 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -64,7 +73,7 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

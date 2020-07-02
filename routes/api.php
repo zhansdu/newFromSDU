@@ -12,4 +12,5 @@ Route::resource('book', 'BookController')->except([
 ]);
 
 Route::get('book/search/{q}', 'BookController@search');
+Route::get('book/autocomplete/{q}', 'BookController@autocomplete');
 

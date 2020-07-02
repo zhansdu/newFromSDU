@@ -1,9 +1,5 @@
 <template>
-    <v-toolbar
-        dark
-        color="teal"
-    >
-        <v-toolbar-title>State selection</v-toolbar-title>
+    <div id="search__input">
         <v-autocomplete
             v-model="select"
             :loading="loading"
@@ -14,13 +10,12 @@
             flat
             hide-no-data
             hide-details
-            label="What state are you from?"
+            label="Search books..."
             solo-inverted
+            :item-text="text"
+            item-value="book_id"
         ></v-autocomplete>
-        <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
-    </v-toolbar>
+    </div>
 </template>
 
 <script>
@@ -31,85 +26,35 @@
                 loading: false,
                 items: [],
                 search: null,
-                select: null,
-                states: [
-                    'Alabama',
-                    'Alaska',
-                    'American Samoa',
-                    'Arizona',
-                    'Arkansas',
-                    'California',
-                    'Colorado',
-                    'Connecticut',
-                    'Delaware',
-                    'District of Columbia',
-                    'Federated States of Micronesia',
-                    'Florida',
-                    'Georgia',
-                    'Guam',
-                    'Hawaii',
-                    'Idaho',
-                    'Illinois',
-                    'Indiana',
-                    'Iowa',
-                    'Kansas',
-                    'Kentucky',
-                    'Louisiana',
-                    'Maine',
-                    'Marshall Islands',
-                    'Maryland',
-                    'Massachusetts',
-                    'Michigan',
-                    'Minnesota',
-                    'Mississippi',
-                    'Missouri',
-                    'Montana',
-                    'Nebraska',
-                    'Nevada',
-                    'New Hampshire',
-                    'New Jersey',
-                    'New Mexico',
-                    'New York',
-                    'North Carolina',
-                    'North Dakota',
-                    'Northern Mariana Islands',
-                    'Ohio',
-                    'Oklahoma',
-                    'Oregon',
-                    'Palau',
-                    'Pennsylvania',
-                    'Puerto Rico',
-                    'Rhode Island',
-                    'South Carolina',
-                    'South Dakota',
-                    'Tennessee',
-                    'Texas',
-                    'Utah',
-                    'Vermont',
-                    'Virgin Island',
-                    'Virginia',
-                    'Washington',
-                    'West Virginia',
-                    'Wisconsin',
-                    'Wyoming',
-                ],
+                select: null
             };
         },
         watch: {
             search(val) {
                 val && val !== this.select && this.querySelections(val)
             },
+            select(newVal) {
+                if (newVal) {
+                    // go to single book page with book_id (newVal)
+                }
+            }
         },
         methods: {
+            text: item => item.title + ', ' + item.pub_year,
             querySelections(v) {
                 this.loading = true
                 // Simulated ajax query
                 setTimeout(() => {
-                    this.items = this.states.filter(e => {
-                        return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-                    })
-                    this.loading = false
-                }, 500)
+                    this.$http.get('api/book/autocomplete/' + v.toString().toLowerCase()).then((res) => {
+                        if (res.status === 200 && res.data.data) {
+                            const data = res.data.data;
+                            this.items = data.filter(e => {
+                                return (e.title || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+                            });
+                            this.loading = false;
+                        }
+                    });
+                }, 500);
             },
         },
     }
