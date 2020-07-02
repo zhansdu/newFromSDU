@@ -11,6 +11,6 @@ Route::resource('book', 'BookController')->except([
     'create', 'edit'
 ]);
 
-Route::get('book/search/{q}', 'BookController@search');
+Route::post('book/search', 'BookController@search');
 Route::post('book/autocomplete', 'BookController@autocomplete');
 

@@ -46,7 +46,7 @@
                 // Simulated ajax query
                 setTimeout(() => {
                     this.$http.post('api/book/autocomplete', {
-                        query: v.toString().toLowerCase(),
+                        q: v.toString().toLowerCase(),
                     }).then((res) => {
                         console.log(res);
                         if (res.status === 200 && res.data.data) {

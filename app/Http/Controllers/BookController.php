@@ -22,16 +22,16 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
-    public function search($query)
+    public function search(Request $request)
     {
-        $books = Book::where(DB::raw('lower(title)'), 'like', '%' . strtolower($query) . '%')->paginate(10);
+        $books = Book::where(DB::raw('lower(title)'), 'like', '%' . strtolower($request->input('q')) . '%')->paginate(10);
 
         return BookResource::collection($books);
     }
 
     public function autocomplete(Request $request)
     {
-        $query = strtolower($request->input('query'));
+        $query = strtolower($request->input('q'));
         $books = Book::select('book_id', 'title', 'pub_year')->where(DB::raw('lower(title)'), 'like', '%' . $query . '%')->take(15)->get();
 
         return BookResource::collection($books);
