@@ -63,7 +63,7 @@ body {
 }
 
 /*for app.vue*/
-#app {
+v-app {
     display: flex;
     flex-direction: column;
 }

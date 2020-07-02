@@ -7,6 +7,7 @@ import router from './router'
 import vuetify from "./plugins/vuetify";
 import store from './store';
 
+
 Vue.prototype.$http = Axios;
 
 const app = new Vue({
