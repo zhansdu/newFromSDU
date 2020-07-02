@@ -4,7 +4,7 @@ window.Vue = require('vue');
 import Axios from "axios";
 import App from "./App";
 import router from "./router";
-import vuetify from "./components/plugins/vuetify";
+import vuetify from "./plugins/vuetify";
 import store from './store'
 
 Vue.prototype.$http = Axios;

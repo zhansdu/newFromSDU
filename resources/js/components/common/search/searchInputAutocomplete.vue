@@ -6,7 +6,7 @@
             :items="items"
             :search-input.sync="search"
             cache-items
-            class="mx-4"
+            class="mx-4 autocomplete very-round"
             flat
             hide-no-data
             hide-details
@@ -32,11 +32,6 @@
         watch: {
             search(val) {
                 val && val !== this.select && this.querySelections(val)
-            },
-            select(newVal) {
-                if (newVal) {
-                    // go to single book page with book_id (newVal)
-                }
             }
         },
         methods: {
@@ -61,5 +56,8 @@
 </script>
 
 <style scoped>
-
+.autocomplete{
+    background: white;
+    border: 1px solid #D2691E;
+}
 </style>
