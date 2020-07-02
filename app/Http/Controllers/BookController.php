@@ -29,9 +29,10 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
-    public function autocomplete($query)
+    public function autocomplete(Request $request)
     {
-        $books = Book::select('book_id', 'title', 'pub_year')->where(DB::raw('lower(title)'), 'like', '%' . strtolower($query) . '%')->take(15)->get();
+        $query = strtolower($request->input('query'));
+        $books = Book::select('book_id', 'title', 'pub_year')->where(DB::raw('lower(title)'), 'like', '%' . $query . '%')->take(15)->get();
 
         return BookResource::collection($books);
     }
