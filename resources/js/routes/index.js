@@ -1,17 +1,10 @@
-import {adminRoutes} from "./admin";
-import {userRoutes} from "./user";
-import Admin from "../components/admin/Admin";
-import User from "../components/user/User";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import {routes} from './routes_vue';
 
-export const routes = [
-    {
-        path: '/admin',
-        component: Admin,
-        children: adminRoutes,
-    },
-    {
-        path: '/',
-        component: User,
-        children: userRoutes
-    }
-];
+Vue.use(VueRouter)
+
+export default new VueRouter({
+  mode: 'history',
+  routes,
+});

@@ -2,22 +2,12 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import Axios from "axios";
-import App from "./components/App";
-import VueRouter from "vue-router";
-import Vuex from "vuex";
-import storeData from './store/index';
-import {routes} from "./routes";
+import App from "./App";
+import router from './router/index';
 import vuetify from "./plugins/vuetify";
+import store from './store/index';
 
-Vue.use(Vuex);
-Vue.use(VueRouter);
 Vue.prototype.$http = Axios;
-
-const store = new Vuex.Store(storeData);
-const router = new VueRouter({
-    mode: 'history',
-    routes
-});
 
 const app = new Vue({
     el: '#app',
@@ -26,3 +16,5 @@ const app = new Vue({
     store,
     vuetify
 });
+
+Vue.config.productionTip = false
