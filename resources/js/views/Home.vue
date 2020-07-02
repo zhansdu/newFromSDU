@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<Search></Search>
+		<div><search/></div>
 	</div>
 </template>
 <script>
-	import Search from "../components/common/Search";
+	import search from '../components/common/Search'
 	export default{
-		components:{Search}
+		components:{search}
 	}
 </script>
 <style scoped>
