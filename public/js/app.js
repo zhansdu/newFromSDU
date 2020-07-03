@@ -1989,7 +1989,7 @@ __webpack_require__.r(__webpack_exports__);
 
       setTimeout(function () {
         _this.$http.post('api/book/autocomplete', {
-          query: v.toString().toLowerCase()
+          q: v.toString().toLowerCase()
         }).then(function (res) {
           console.log(res);
 
