@@ -3,7 +3,7 @@
         <v-autocomplete
             v-model="select"
             :loading="loading"
-            :items="items"
+            :items="media"
             :search-input.sync="search"
             cache-items
             class="mx-4"
@@ -13,7 +13,7 @@
             label="Search books..."
             solo-inverted
             :item-text="text"
-            item-value="book_id"
+            item-value="id"
         />
     </div>
 </template>
@@ -33,8 +33,17 @@
                 loading: false,
                 items: [],
                 search: null,
-                select: null
+                select: null,
+                searchType: 'book',
             };
+        },
+        computed: {
+            media() {
+                return this.items.map(item => {
+                    const title = item.title.length > 50 ? item.title.slice(0, 50) + '...' : item.title;
+                    return Object.assign({}, item, {title});
+                });
+            },
         },
         watch: {
             search(val) {
@@ -43,16 +52,20 @@
             }
         },
         methods: {
-            text: item => item.title + ', ' + item.pub_year,
+            text: item => {
+                let text = item.title;
+                text += item.year ? `, ${item.year}` : '';
+                return text;
+            },
             querySelections(v) {
                 this.loading = true
                 // Simulated ajax query
                 setTimeout(() => {
-                    this.$http.post('api/book/autocomplete', {
-                        q: v.toString().toLowerCase(),
-                    }).then((res) => {
-                        if (res.status === 200 && res.data.data) {
-                            const data = res.data.data;
+                    const query = encodeURIComponent(v.toString().toLowerCase());
+                    const type = encodeURIComponent(this.searchType);
+                    this.$http.get('api/book/search/autocomplete?q=' + query + '&type=' + type).then((res) => {
+                        if (res.status === 200 && res.data) {
+                            const data = res.data;
                             this.items = data.filter(e => {
                                 return (e.title || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
                             });

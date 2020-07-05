@@ -1973,8 +1973,19 @@ __webpack_require__.r(__webpack_exports__);
       loading: false,
       items: [],
       search: null,
-      select: null
+      select: null,
+      searchType: 'book'
     };
+  },
+  computed: {
+    media: function media() {
+      return this.items.map(function (item) {
+        var title = item.title.length > 50 ? item.title.slice(0, 50) + '...' : item.title;
+        return Object.assign({}, item, {
+          title: title
+        });
+      });
+    }
   },
   watch: {
     search: function search(val) {
@@ -1984,7 +1995,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     text: function text(item) {
-      return item.title + ', ' + item.pub_year;
+      var text = item.title;
+      text += item.year ? ", ".concat(item.year) : '';
+      return text;
     },
     querySelections: function querySelections(v) {
       var _this = this;
@@ -1992,11 +2005,12 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true; // Simulated ajax query
 
       setTimeout(function () {
-        _this.$http.post('api/book/autocomplete', {
-          q: v.toString().toLowerCase()
-        }).then(function (res) {
-          if (res.status === 200 && res.data.data) {
-            var data = res.data.data;
+        var query = encodeURIComponent(v.toString().toLowerCase());
+        var type = encodeURIComponent(_this.searchType);
+
+        _this.$http.get('api/book/search/autocomplete?q=' + query + '&type=' + type).then(function (res) {
+          if (res.status === 200 && res.data) {
+            var data = res.data;
             _this.items = data.filter(function (e) {
               return (e.title || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1;
             });
@@ -2259,12 +2273,12 @@ __webpack_require__.r(__webpack_exports__);
     getResults: function getResults() {
       var _this = this;
 
-      this.$http.post('api/book/search', {
-        q: this.$store.state.query
-      }).then(function (response) {
-        _this.$emit('click', response.data);
-
-        console.log(response.data);
+      var query = encodeURIComponent(this.$store.state.query);
+      var type = encodeURIComponent('book');
+      this.$http.get('api/book/search/simple?q=' + query + '&type=' + type).then(function (res) {
+        if (res.status === 200 && res.data) {
+          _this.$emit('click', res.data);
+        }
       });
     }
   }
@@ -38978,7 +38992,7 @@ var render = function() {
         staticClass: "mx-4",
         attrs: {
           loading: _vm.loading,
-          items: _vm.items,
+          items: _vm.media,
           "search-input": _vm.search,
           "cache-items": "",
           flat: "",
@@ -38987,7 +39001,7 @@ var render = function() {
           label: "Search books...",
           "solo-inverted": "",
           "item-text": _vm.text,
-          "item-value": "book_id"
+          "item-value": "id"
         },
         on: {
           "update:searchInput": function($event) {

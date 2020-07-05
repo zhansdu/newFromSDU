@@ -25,10 +25,13 @@ export default{
 	},
 	methods:{
 		getResults(){
-			this.$http.post('api/book/search',{q:this.$store.state.query}).then(response=>{
-				this.$emit('click',response.data);
-				console.log(response.data);
-			})
+            const query = encodeURIComponent(this.$store.state.query);
+            const type = encodeURIComponent('book');
+            this.$http.get('api/book/search/simple?q=' + query + '&type=' + type).then((res) => {
+                if (res.status === 200 && res.data) {
+                    this.$emit('click',res.data);
+                }
+            });
 		}
 	}
 }
