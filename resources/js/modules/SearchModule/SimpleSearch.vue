@@ -1,7 +1,7 @@
 <template>
 	<div class="main">
 		<div class="search">
-			<searchInput class="searchInput" v-model="query"/>
+			<searchInput class="searchInput" v-model="$store.state.query"/>
 			<div><button class="button middle-round" @click="getResults()">Search</button></div>
 		</div>
 		<a class="advancedSearch" @click="method(1)">Advanced Search</a>
@@ -23,15 +23,11 @@ export default{
 		// this returns simple search results
 		value:Object
 	},
-	data(){
-		return{
-			query:'initial'
-		}
-	},
 	methods:{
 		getResults(){
 			this.$http.post('api/book/search',{q:this.$store.state.query}).then(response=>{
 				this.$emit('click',response.data);
+				console.log(response.data);
 			})
 		}
 	}

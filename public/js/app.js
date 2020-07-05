@@ -2255,11 +2255,6 @@ __webpack_require__.r(__webpack_exports__);
     // this returns simple search results
     value: Object
   },
-  data: function data() {
-    return {
-      query: 'initial'
-    };
-  },
   methods: {
     getResults: function getResults() {
       var _this = this;
@@ -2268,6 +2263,8 @@ __webpack_require__.r(__webpack_exports__);
         q: this.$store.state.query
       }).then(function (response) {
         _this.$emit('click', response.data);
+
+        console.log(response.data);
       });
     }
   }
@@ -39352,11 +39349,11 @@ var render = function() {
         _c("searchInput", {
           staticClass: "searchInput",
           model: {
-            value: _vm.query,
+            value: _vm.$store.state.query,
             callback: function($$v) {
-              _vm.query = $$v
+              _vm.$set(_vm.$store.state, "query", $$v)
             },
-            expression: "query"
+            expression: "$store.state.query"
           }
         }),
         _vm._v(" "),
