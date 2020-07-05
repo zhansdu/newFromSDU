@@ -7,10 +7,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('book', 'BookController')->except([
-    'create', 'edit'
-]);
-
-Route::post('book/search', 'BookController@search');
-Route::post('book/autocomplete', 'BookController@autocomplete');
+Route::prefix('book')->group(static function () {
+    Route::get('search/{searchType}', 'BookController@search');
+    Route::get('{id}', 'BookController@show');
+});
 

@@ -2,83 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Response;
+use App\Http\Resources\Simple as SimpleResource;
 use Illuminate\Http\Request;
-use App\Book;
-use App\Http\Resources\Book as BookResource;
 use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function index()
+    public function search(Request $request, $searchType)
     {
-        $books = Book::paginate(10);
+        $query = strtolower($request->get('q'));
+        $type = $request->get('type');
+        $idField = $type . '_id';
+        $searchField = 'title';
 
-        return BookResource::collection($books);
+        $data = DB::table('lib_' . $type . 's as m');
+
+        if ($type === 'disc') {
+            $searchField = 'name';
+        }
+
+        if ($searchType === 'autocomplete') {
+            $data = $data->select($idField . ' as id', $searchField . ' as title', 'pub_year as year')->where(DB::raw("lower({$searchField})"),
+                'like', '%' . $query . '%')->take(15)->get();
+        } else if ($searchType === 'simple') {
+            /* Select fields list:
+             *      View            - Field
+             * *******************************************************************\
+             *      id              - book or disc or journal id
+             *      author          - book_id (join with table - lib_book_authors (book_id))
+             *      call_number     - isbn
+             *      title           - title or name
+             *      type            - generate by table
+             *      publisher       - publisher_id (join with table - lib_publishers (publisher_id))
+             *      year            - pub_year
+             *      availability    - ???
+             * */
+            $data = $data->select('m.' . $idField . ' as id', 'm.' . $searchField . ' as title', 'm.pub_year as year', 'm.isbn as call_number');
+            $data = $data->leftJoin('lib_publishers as p', 'p.publisher_id', '=', 'm.publisher_id');
+            $data = $data->addSelect('p.name as publisher');
+
+            if ($type === 'book') {
+                $data = $data->leftJoin('lib_book_authors as a', 'a.' . $idField, '=', 'm.' . $idField);
+                $data = $data->addSelect(DB::raw("a.name||a.surname as author"));
+            }
+
+            $data = $data->where(DB::raw("lower(m.{$searchField})"),
+                'like', '%' . $query . '%')->paginate(10);
+        }
+
+        return $data->toArray();
     }
 
-    public function search(Request $request)
+    public function show(Request $request, $id)
     {
-        $books = Book::where(DB::raw('lower(title)'), 'like', '%' . strtolower($request->input('q')) . '%')->paginate(10);
+        $type = $request->get('type');
 
-        return BookResource::collection($books);
-    }
+        $idField = 'books_id';
 
-    public function autocomplete(Request $request)
-    {
-        $query = strtolower($request->input('q'));
-        $books = Book::select('book_id', 'title', 'pub_year')->where(DB::raw('lower(title)'), 'like', '%' . $query . '%')->take(15)->get();
+        if ($type === 'lib_discs') {
+            $idField = 'disc_id';
+        } else if ($type === 'lib_journals') {
+            $idField = 'journal_id';
+        }
 
-        return BookResource::collection($books);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $data = DB::table($type . ' as m');
     }
 }
