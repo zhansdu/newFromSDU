@@ -14,12 +14,19 @@
             solo-inverted
             :item-text="text"
             item-value="book_id"
-        ></v-autocomplete>
+        />
     </div>
 </template>
 
 <script>
     export default {
+        model: {
+            prop: 'value',
+            event: 'input'
+        },
+        props:{
+            value:String
+        },
         name: "Search",
         data: () => {
             return {
@@ -31,12 +38,8 @@
         },
         watch: {
             search(val) {
-                val && val !== this.select && this.querySelections(val)
-            },
-            select(newVal) {
-                if (newVal) {
-                    // go to single book page with book_id (newVal)
-                }
+                val && val !== this.select && this.querySelections(val);
+                this.$emit('input',this.search);
             }
         },
         methods: {
@@ -48,7 +51,6 @@
                     this.$http.post('api/book/autocomplete', {
                         q: v.toString().toLowerCase(),
                     }).then((res) => {
-                        console.log(res);
                         if (res.status === 200 && res.data.data) {
                             const data = res.data.data;
                             this.items = data.filter(e => {

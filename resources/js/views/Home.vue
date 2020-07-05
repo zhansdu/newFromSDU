@@ -1,12 +1,12 @@
 <template>
 	<div class="homeParent">
-		<div><searchDiv/></div>
+		<div><SearchModule/></div>
 	</div>
 </template>
 <script>
-	import searchDiv from './searchDiv'
+	import SearchModule from '../modules/SearchModule/SearchParent.vue'
 	export default{
-		components:{searchDiv}
+		components:{SearchModule}
 	}
 </script>
 <style scoped>

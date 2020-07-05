@@ -1,7 +1,8 @@
 /*for all*/
-html, body, #app {
+html, body{
     min-height: 100vh;
     width: 100vw;
+    min-width: 615px;
     height: 100%;
 }
 
@@ -9,8 +10,8 @@ html, body, #app {
     display: flex;
 }
 
-body {
-    background: #E9F0F4;
+body,#app {
+    background: #E9F0F4 !important;
 }
 
 * {
