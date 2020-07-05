@@ -9,7 +9,7 @@
 </template>
 <script>
 // @/components/common/SearchInputAutocomplete <- this is where it is from
-import searchInput from '../../components/common/SearchInputAutocomplete'
+import searchInput from '../../../components/common/SearchInputAutocomplete'
 
 export default{
 	model: {
@@ -25,11 +25,12 @@ export default{
 	},
 	methods:{
 		getResults(){
-            const query = encodeURIComponent(this.$store.state.query);
+            const query = encodeURIComponent(this.$store.state.query.toString().toLowerCase());
             const type = encodeURIComponent('book');
             this.$http.get('api/book/search/simple?q=' + query + '&type=' + type).then((res) => {
                 if (res.status === 200 && res.data) {
                     this.$emit('click',res.data);
+                    console.log(res.data);
                 }
             });
 		}
@@ -42,6 +43,9 @@ export default{
 	display: flex;
 	flex-direction: column;
 	background:#C4C4C4;
+	width:58%;
+	min-width: 500px;
+	border:2px solid #2e516c;
 }
 .search{
 	display: flex;
@@ -54,6 +58,7 @@ export default{
 }
 .button{
 	background:#4CAF50;
+	color: white;
 }
 .advancedSearch{
 	color:#1F97FF;

@@ -12,24 +12,28 @@
 
 		<!-- this is for results -->
 		<div class="main results" v-if="Object.keys(simRes).length!=0">
-			<Pagination :links="simRes.links" :meta="simRes.meta" v-model="simRes"/>
-			<div class="data">
-				<div v-for="(book,index) in simRes.data" :key="index" class="book"><BookCard :bookData='book'/></div>
+			<div v-if="simRes.data.length==0">
+				Sorry, no data
 			</div>
-			<Pagination :links="simRes.links" :meta="simRes.meta" v-model="simRes"/>
-
+			<div v-else>
+				<Pagination :data ="simRes" v-model="simRes"/>
+				<div class="data">
+					<div v-for="(book,index) in simRes.data" :key="index" class="book"><BookCard :bookData='book'/></div>
+				</div>
+				<Pagination :data ="simRes" v-model="simRes"/>
+			</div>
 		</div>
 	</div>
 </template>
 <script type="text/javascript">
 // simple search div
-import SimpleSearch from './SimpleSearch'
+import SimpleSearch from './views/SimpleSearch'
 // advanced search div
-import AdvancedSearch from './AdvancedSearch'
+import AdvancedSearch from './views/AdvancedSearch'
 // pagination
-import Pagination from './Pagination'
+import Pagination from './components/Pagination'
 // book card
-import BookCard from './BookCard'
+import BookCard from './components/BookCard'
 
 export default{
 	components:{SimpleSearch,AdvancedSearch,Pagination,BookCard},
@@ -61,6 +65,7 @@ export default{
 	margin-top: 20px;
 	padding: 10px 15px 20px 15px;
 	background:#C4C4C4;
+	border:2px solid #2e516c;
 }
 .tabs{
 	display: flex;
@@ -68,9 +73,24 @@ export default{
 .tabs > div{
 	padding:10px 15px;
 	cursor: pointer;
+	margin-bottom: -2px;
+	border:2px solid transparent;
+	z-index: 1;
 }
 .active{
+	border-color: #2e516c !important;
 	background:#C4C4C4;
+	position: relative;
+}
+.active::after{
+	position: absolute;
+	display: block;
+	top:44px;
+	left:0;
+	content:'';
+	width: 100%;
+	height:2px;
+	background-color: #C4C4C4;
 }
 .inactive{
 	color:#1F97FF;

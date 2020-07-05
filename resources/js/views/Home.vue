@@ -17,7 +17,7 @@
 	padding:25px;
 }
 .homeParent>div{
-	width:48%;
 	min-width:600px;
+	width: 100%;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
 	<div class="pagination">
-		<div>Results {{meta.from}} - {{meta.to}} of {{meta.total}}</div>
+		<div>Results {{data.from}} - {{data.to}} of {{data.total}}</div>
 		<div class="links">
 			<div class="arrow left"></div>
-			<div v-for="index in range(meta.from,meta.last_page)" :key="index" class="link" :class="{current:meta.current_page==index}">{{index}}</div>
+			<div v-for="index in range(data.current_page,data.last_page)" :key="index" class="link" :class="{current:data.current_page==index}">{{index}}</div>
 			<div class="arrow right"></div>
 		</div>
 	</div>
@@ -16,8 +16,7 @@ export default{
 		event: 'click'
 	},
 	props:{
-		links:Object,
-		meta:Object,
+		data: Object,
 		value:Object
 	},
 	methods:{
